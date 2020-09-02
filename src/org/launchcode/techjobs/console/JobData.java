@@ -10,6 +10,7 @@ import java.io.Reader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by LaunchCode
@@ -20,6 +21,13 @@ public class JobData {
     private static Boolean isDataLoaded = false;
 
     private static ArrayList<HashMap<String, String>> allJobs;
+
+    public ArrayList<HashMap<String, String>> getAllJobs(){
+        return this.allJobs;
+    }
+    public void setAllJobs(ArrayList<HashMap<String, String>> allJobs){
+        this.allJobs = allJobs;
+    }
 
     /**
      * Fetch list of all values from loaded data,
@@ -75,6 +83,8 @@ public class JobData {
         for (HashMap<String, String> row : allJobs) {
 
             String aValue = row.get(column);
+            aValue = aValue.toLowerCase();
+            value = value.toLowerCase();
 
             if (aValue.contains(value)) {
                 jobs.add(row);
@@ -123,6 +133,24 @@ public class JobData {
             System.out.println("Failed to load job data");
             e.printStackTrace();
         }
+    }
+
+    public static ArrayList<HashMap<String, String>> findByValue(String searchTerm) {
+        loadData();
+        ArrayList<HashMap<String, String>> jobs = new ArrayList<>();
+        for (HashMap<String, String> jobListing : allJobs) {
+            for (Map.Entry<String, String> property : jobListing.entrySet()) {
+                String aValue = property.getValue();
+                aValue = aValue.toLowerCase();
+                searchTerm = searchTerm.toLowerCase();
+                if (aValue.contains(searchTerm)) {
+                    if (!jobs.contains(jobListing)) {
+                        jobs.add(jobListing);
+                    }
+                }
+            }
+        }
+        return jobs;
     }
 
 }
